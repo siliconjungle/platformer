@@ -145,6 +145,10 @@ const imagesData = [
     src: 'squid.png',
     name: 'squid',
   },
+  {
+    src: 'boss2.png',
+    name: 'boss2',
+  },
 ]
 
 const soundsData = [
@@ -341,10 +345,11 @@ const render = () => {
   // const greenGem = getImageByName('green-gem')
   const man = getImageByName('man')
   const man2 = getImageByName('man2')
-  const mage = getImageByName('mage')
-  const mage2 = getImageByName('mage2')
-  const squid = getImageByName('squid')
-  const slime = getImageByName('slime')
+  // const mage = getImageByName('mage')
+  // const mage2 = getImageByName('mage2')
+  // const squid = getImageByName('squid')
+  // const slime = getImageByName('slime')
+  const boss2 = getImageByName('boss2')
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -377,25 +382,33 @@ const render = () => {
   //   redGem.height * 2,
   // )
 
-  ctx.drawImage(
-    slime,
-    (canvas.width * 0.5) - slime.width * 2,
-    canvas.height - ground.height * 2 - slime.height,
-    slime.width * 2,
-    slime.height * 2,
-  )
+  // ctx.drawImage(
+  //   slime,
+  //   (canvas.width * 0.5) - slime.width * 2,
+  //   canvas.height - ground.height * 2 - slime.height,
+  //   slime.width * 2,
+  //   slime.height * 2,
+  // )
+  //
+  // ctx.drawImage(
+  //   squid,
+  //   (canvas.width * 0.5) - squid.width * 4,
+  //   canvas.height - ground.height * 2 - squid.height,
+  //   squid.width * 2,
+  //   squid.height * 2,
+  // )
 
   ctx.drawImage(
-    squid,
-    (canvas.width * 0.5) - squid.width * 4,
-    canvas.height - ground.height * 2 - squid.height,
-    squid.width * 2,
-    squid.height * 2,
+    boss2,
+    canvas.width * 0.5 - boss2.width,
+    canvas.height - ground.height * 2 - boss2.height * 2 + 50,
+    boss2.width * 2,
+    boss2.height * 2,
   )
 
   ctx.drawImage(
     man,
-    (canvas.width * 0.5) + man.width,
+    canvas.width - man.width * 3,
     canvas.height - ground.height * 2 - man.height * 1.6,
     man.width * 2,
     man.height * 2,
@@ -403,7 +416,7 @@ const render = () => {
 
   ctx.drawImage(
     man2,
-    canvas.width * 0.5 - man2.width,
+    canvas.width - man2.width * 6,
     canvas.height - ground.height * 2 - man2.height * 1.6,
     man2.width * 2,
     man2.height * 2,
@@ -431,13 +444,13 @@ const render = () => {
     )
   }
 
-  ctx.drawImage(
-    pumpkin,
-    canvas.width - pumpkin.width * 2,
-    canvas.height - ground.height * 2 - pumpkin.height * 0.75,
-    pumpkin.width * 2,
-    pumpkin.height * 2,
-  )
+  // ctx.drawImage(
+  //   pumpkin,
+  //   canvas.width - pumpkin.width * 2,
+  //   canvas.height - ground.height * 2 - pumpkin.height * 0.75,
+  //   pumpkin.width * 2,
+  //   pumpkin.height * 2,
+  // )
 
   ctx.drawImage(
     ground,
@@ -455,29 +468,29 @@ const render = () => {
   //   greenGem.height * 2,
   // )
 
-  ctx.drawImage(
-    mage,
-    (canvas.width * 0.5) + mage.width * 2,
-    canvas.height - ground.height * 2 - mage.height,
-    mage.width * 2,
-    mage.height * 2,
-  )
+  // ctx.drawImage(
+  //   mage,
+  //   (canvas.width * 0.5) + mage.width * 2,
+  //   canvas.height - ground.height * 2 - mage.height,
+  //   mage.width * 2,
+  //   mage.height * 2,
+  // )
+  //
+  // ctx.drawImage(
+  //   mage2,
+  //   (canvas.width * 0.5),
+  //   canvas.height - ground.height * 2 - mage2.height,
+  //   mage2.width * 2,
+  //   mage2.height * 2,
+  // )
 
-  ctx.drawImage(
-    mage2,
-    (canvas.width * 0.5),
-    canvas.height - ground.height * 2 - mage2.height,
-    mage2.width * 2,
-    mage2.height * 2,
-  )
-
-  ctx.drawImage(
-    boss,
-    canvas.width - boss.width * 2,
-    canvas.height - ground.height * 2 - boss.height * 2,
-    boss.width * 2,
-    boss.height * 2,
-  )
+  // ctx.drawImage(
+  //   boss,
+  //   canvas.width - boss.width * 2,
+  //   canvas.height - ground.height * 2 - boss.height * 2,
+  //   boss.width * 2,
+  //   boss.height * 2,
+  // )
 }
 
 startButton.onclick = async () => {
