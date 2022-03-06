@@ -49,7 +49,7 @@ const loadImages = async (imagesData) =>
 
 const imagesData = [
   {
-    src: 'running.png',
+    src: 'move.png',
     name: 'running',
   },
   {
