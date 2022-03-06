@@ -3,6 +3,7 @@ import {
   addActionDownListener,
   handleKeyDown,
   handleKeyUp,
+  getActionState,
 } from './controller.mjs'
 
 const $ = (id) => document.getElementById(id)
@@ -35,17 +36,17 @@ const loadImages = async (imagesData) =>
   })
 
 // Does not work on Heroku
-// const loadSounds = async (soundsData) =>
-//   new Promise((resolve, reject) => {
-//     const sounds = {}
-//     soundsData.forEach(soundData => {
-//       const sound = new Audio(soundData.src)
-//       sounds[soundData.name] = sound
-//       if (Object.keys(sounds).length === soundsData.length) {
-//         resolve(sounds)
-//       }
-//     })
-//   })
+const loadSounds = async (soundsData) =>
+  new Promise((resolve, reject) => {
+    const sounds = {}
+    soundsData.forEach(soundData => {
+      const sound = new Audio(soundData.src)
+      sounds[soundData.name] = sound
+      if (Object.keys(sounds).length === soundsData.length) {
+        resolve(sounds)
+      }
+    })
+  })
 
 const imagesData = [
   {
@@ -53,16 +54,40 @@ const imagesData = [
     name: 'running',
   },
   {
+    src: 'move-left.png',
+    name: 'running-left',
+  },
+  {
     src: 'jump.png',
     name: 'jump',
+  },
+  {
+    src: 'jump-left.png',
+    name: 'jump-left',
   },
   {
     src: 'fall.png',
     name: 'fall',
   },
   {
+    src: 'fall-left.png',
+    name: 'fall-left',
+  },
+  {
     src: 'land.png',
     name: 'land',
+  },
+  {
+    src: 'land-left.png',
+    name: 'land-left',
+  },
+  {
+    src: 'stand.png',
+    name: 'stand',
+  },
+  {
+    src: 'stand-left.png',
+    name: 'stand-left',
   },
   {
     src: 'ground.png',
@@ -79,6 +104,46 @@ const imagesData = [
   {
     src: 'boss.png',
     name: 'boss',
+  },
+  {
+    src: 'pumpkin.png',
+    name: 'pumpkin',
+  },
+  {
+    src: 'red-gem.png',
+    name: 'red-gem',
+  },
+  {
+    src: 'purple-gem.png',
+    name: 'green-gem',
+  },
+  {
+    src: 'green-gem.png',
+    name: 'purple-gem',
+  },
+  {
+    src: 'man.png',
+    name: 'man',
+  },
+  {
+    src: 'man2.png',
+    name: 'man2',
+  },
+  {
+    src: 'mage.png',
+    name: 'mage',
+  },
+  {
+    src: 'mage2.png',
+    name: 'mage2',
+  },
+  {
+    src: 'slime.png',
+    name: 'slime',
+  },
+  {
+    src: 'squid.png',
+    name: 'squid',
   },
 ]
 
@@ -110,10 +175,15 @@ let dt = 0
 const START_Y = canvas.height - PLAYER_HEIGHT * 2 - 145
 const MAX_Y_SPEED = 60
 const INITIAL_JUMP_SPEED = -10
+const MOVE_SPEED = 200
+const LEFT = -1
+const RIGHT = 1
 
 const player = {
   x: PLAYER_WIDTH * 2,
   y: START_Y,
+  facing: RIGHT,
+  xSpeed: 0,
   ySpeed: 0,
   frame: 0,
   accumulator: 0,
@@ -138,6 +208,14 @@ registerActions([
     name: 'jump',
     keycode: '32',
   },
+  {
+    name: 'left',
+    keycode: '65',
+  },
+  {
+    name: 'right',
+    keycode: '68',
+  },
 ])
 
 addActionDownListener('jump', () => {
@@ -153,14 +231,14 @@ addActionDownListener('jump', () => {
 
 const getImageByName = name => images?.[name] || null
 
-// const getSoundByName = name => sounds?.[name] || null
+const getSoundByName = name => sounds?.[name] || null
 
 const init = async () => {
   images = await loadImages(imagesData)
   // sounds = await loadSounds(soundsData)
 
   // const music = getSoundByName('music')
-  //
+
   // music.addEventListener('ended', function () {
   //   this.currentTime = 0
   //   this.play()
@@ -222,17 +300,52 @@ const update = () => {
     player.accumulator = 0
   }
 
+
+  player.xSpeed = 0
+  if (getActionState('left')) {
+    player.xSpeed -= MOVE_SPEED
+    player.facing = LEFT
+  }
+  if (getActionState('right')) {
+    player.xSpeed += MOVE_SPEED
+    player.facing = RIGHT
+  }
+
+  if (player.xSpeed === 0 && player.sprite === 'running') {
+    player.sprite = 'stand'
+    player.frame = 0
+    player.accumulator = 0
+    player.fps = 8
+  } else if (player.sprite === 'stand' && player.xSpeed !== 0) {
+    player.sprite = 'running'
+    player.frame = 0
+    player.accumulator = 0
+    player.fps = 8
+  }
+
+  player.x += player.xSpeed * dt
+
   render()
 
   lastTime = currentTime
 }
 
 const render = () => {
-  const character = getImageByName(player.sprite)
+  const character = getImageByName(player.facing === RIGHT ? player.sprite : `${player.sprite}-left`)
   const ground = getImageByName('ground')
   const background = getImageByName('background')
   const avatar = getImageByName('avatar')
   const boss = getImageByName('boss')
+  const pumpkin = getImageByName('pumpkin')
+  // const redGem = getImageByName('red-gem')
+  // const greenGem = getImageByName('green-gem')
+  const man = getImageByName('man')
+  const man2 = getImageByName('man2')
+  const mage = getImageByName('mage')
+  const mage2 = getImageByName('mage2')
+  const squid = getImageByName('squid')
+  const slime = getImageByName('slime')
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -254,6 +367,46 @@ const render = () => {
     8,
     AVATAR_WIDTH * 2,
     AVATAR_HEIGHT * 2,
+  )
+
+  // ctx.drawImage(
+  //   redGem,
+  //   (canvas.width * 0.5) - redGem.width * 2,
+  //   canvas.height - ground.height * 2 - redGem.height,
+  //   redGem.width * 2,
+  //   redGem.height * 2,
+  // )
+
+  ctx.drawImage(
+    slime,
+    (canvas.width * 0.5) - slime.width * 2,
+    canvas.height - ground.height * 2 - slime.height,
+    slime.width * 2,
+    slime.height * 2,
+  )
+
+  ctx.drawImage(
+    squid,
+    (canvas.width * 0.5) - squid.width * 4,
+    canvas.height - ground.height * 2 - squid.height,
+    squid.width * 2,
+    squid.height * 2,
+  )
+
+  ctx.drawImage(
+    man,
+    (canvas.width * 0.5) + man.width,
+    canvas.height - ground.height * 2 - man.height * 1.6,
+    man.width * 2,
+    man.height * 2,
+  )
+
+  ctx.drawImage(
+    man2,
+    canvas.width * 0.5 - man2.width,
+    canvas.height - ground.height * 2 - man2.height * 1.6,
+    man2.width * 2,
+    man2.height * 2,
   )
 
   if (player.sprite === 'running' || player.sprite === 'fall') {
@@ -279,11 +432,43 @@ const render = () => {
   }
 
   ctx.drawImage(
+    pumpkin,
+    canvas.width - pumpkin.width * 2,
+    canvas.height - ground.height * 2 - pumpkin.height * 0.75,
+    pumpkin.width * 2,
+    pumpkin.height * 2,
+  )
+
+  ctx.drawImage(
     ground,
     0,
     canvas.height - ground.height * 2,
     ground.width * 2,
     ground.height * 2,
+  )
+
+  // ctx.drawImage(
+  //   greenGem,
+  //   (canvas.width * 0.5) + greenGem.width,
+  //   canvas.height - ground.height * 2 - greenGem.height,
+  //   greenGem.width * 2,
+  //   greenGem.height * 2,
+  // )
+
+  ctx.drawImage(
+    mage,
+    (canvas.width * 0.5) + mage.width * 2,
+    canvas.height - ground.height * 2 - mage.height,
+    mage.width * 2,
+    mage.height * 2,
+  )
+
+  ctx.drawImage(
+    mage2,
+    (canvas.width * 0.5),
+    canvas.height - ground.height * 2 - mage2.height,
+    mage2.width * 2,
+    mage2.height * 2,
   )
 
   ctx.drawImage(

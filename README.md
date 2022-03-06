@@ -1,7 +1,7 @@
 # Platformer
 
-Character art, mushrooms, rock & log by Siegfried Croes.
-Boss, ground, background & programming by James Addison.
+Player character, mushrooms, rock & log by Siegfried Croes.
+The rest by James Addison.
 
 The game logic is really hacky at the moment. The animation handling needs a lot of work.
 I should build a state machine.
