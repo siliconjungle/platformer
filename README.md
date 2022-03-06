@@ -1,6 +1,5 @@
 # Platformer
 
-Music by Luka Baptista.
 Character art, mushrooms, rock & log by Siegfried Croes.
 Boss, ground, background & programming by James Addison.
 

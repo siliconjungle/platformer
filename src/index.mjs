@@ -34,17 +34,18 @@ const loadImages = async (imagesData) =>
     })
   })
 
-const loadSounds = async (soundsData) =>
-  new Promise((resolve, reject) => {
-    const sounds = {}
-    soundsData.forEach(soundData => {
-      const sound = new Audio(soundData.src)
-      sounds[soundData.name] = sound
-      if (Object.keys(sounds).length === soundsData.length) {
-        resolve(sounds)
-      }
-    })
-  })
+// Does not work on Heroku
+// const loadSounds = async (soundsData) =>
+//   new Promise((resolve, reject) => {
+//     const sounds = {}
+//     soundsData.forEach(soundData => {
+//       const sound = new Audio(soundData.src)
+//       sounds[soundData.name] = sound
+//       if (Object.keys(sounds).length === soundsData.length) {
+//         resolve(sounds)
+//       }
+//     })
+//   })
 
 const imagesData = [
   {
@@ -152,19 +153,19 @@ addActionDownListener('jump', () => {
 
 const getImageByName = name => images?.[name] || null
 
-const getSoundByName = name => sounds?.[name] || null
+// const getSoundByName = name => sounds?.[name] || null
 
 const init = async () => {
   images = await loadImages(imagesData)
   sounds = await loadSounds(soundsData)
 
-  const music = getSoundByName('music')
-
-  music.addEventListener('ended', function () {
-    this.currentTime = 0
-    this.play()
-  }, false)
-  music.play()
+  // const music = getSoundByName('music')
+  //
+  // music.addEventListener('ended', function () {
+  //   this.currentTime = 0
+  //   this.play()
+  // }, false)
+  // music.play()
 
   window.requestAnimationFrame(update)
 }
