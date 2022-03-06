@@ -1,13 +1,17 @@
 <html>
     <head>
         <link rel="stylesheet" href="/index.css">
-        <title>Starter Collaborative</title>
+        <title>Platformer</title>
     </head>
     <body>
-        <h1>Markdown editor</h1>
-        <p>Using a shelf CRDT for synchronising data. Currently just replaces strings. Does not handle disconnects and versions properly and is frail.</p>
-        <textarea id="text-input" oninput="this.editor.update()" rows="6" cols="60" placeholder="Markdown goes here"></textarea>
-        <div id="preview"></div>
+        <h1>Platformer</h1>
+        <p>Music by Luka Baptista.</p>
+        <p>Character art, mushrooms, rock & log by Siegfried Croes.</p>
+        <p>Boss, ground, background & programming by James Addison.</p>
+        <div>
+            <button id="start-btn">Play</button>
+        </div>
+        <canvas id="game" width="640" height="480"></canvas>
         <script src="/main.js"></script>
     </body>
 </html>

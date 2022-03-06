@@ -1,8 +1,11 @@
-# Starter collaborative
+# Platformer
 
-This project is a stripped back static site which can be used for arbitrary frontend resources for a cabinet.
+Music by Luka Baptista.
+Character art, mushrooms, rock & log by Siegfried Croes.
+Boss, ground, background & programming by James Addison.
 
-It currently uses a textarea & markdown preview as an example.
+The game logic is really hacky at the moment. The animation handling needs a lot of work.
+I should build a state machine.
 
 ## License
 MIT License
