@@ -157,7 +157,7 @@ const getImageByName = name => images?.[name] || null
 
 const init = async () => {
   images = await loadImages(imagesData)
-  sounds = await loadSounds(soundsData)
+  // sounds = await loadSounds(soundsData)
 
   // const music = getSoundByName('music')
   //
