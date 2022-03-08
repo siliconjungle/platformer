@@ -1,10 +1,6 @@
 # Platformer
 
-Player character, mushrooms, rock & log by Siegfried Croes.
-The rest by James Addison.
-
-The game logic is really hacky at the moment. The animation handling needs a lot of work.
-I should build a state machine.
+An exploration game by James Addison.
 
 ## License
 MIT License

@@ -18,10 +18,12 @@ import { createPlayer } from '../player.mjs'
 //   loadAudio,
 //   getAudioByName,
 // } from './audio.mjs'
+import { playerTextures } from '../texture-data.mjs'
+import { setCollisionMap } from '../collision-map.mjs'
 
 const $ = (id) => document.getElementById(id)
 
-const startButton = $('start-btn')
+// const startButton = $('start-btn')
 
 const canvas = $('game')
 const ctx = canvas.getContext('2d')
@@ -33,46 +35,7 @@ ctx.msImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
 const texturesData = [
-  {
-    src: 'move.png',
-    name: 'running',
-  },
-  {
-    src: 'move-left.png',
-    name: 'running-left',
-  },
-  {
-    src: 'jump.png',
-    name: 'jump',
-  },
-  {
-    src: 'jump-left.png',
-    name: 'jump-left',
-  },
-  {
-    src: 'fall.png',
-    name: 'fall',
-  },
-  {
-    src: 'fall-left.png',
-    name: 'fall-left',
-  },
-  {
-    src: 'land.png',
-    name: 'land',
-  },
-  {
-    src: 'land-left.png',
-    name: 'land-left',
-  },
-  {
-    src: 'stand.png',
-    name: 'idle',
-  },
-  {
-    src: 'stand-left.png',
-    name: 'idle-left',
-  },
+  ...playerTextures,
   {
     src: 'ground.png',
     name: 'ground',
@@ -80,6 +43,10 @@ const texturesData = [
   {
     src: 'stars.png',
     name: 'background',
+  },
+  {
+    src: 'collision-map.png',
+    name: 'collision-map',
   },
   // {
   //   src: 'avatar.png',
@@ -158,7 +125,7 @@ const texturesData = [
 //   },
 // ]
 
-let running = false
+// let running = false
 
 // const AVATAR_WIDTH = 40
 // const AVATAR_HEIGHT = 40
@@ -172,7 +139,11 @@ let dt = 0
 // const AFK_TIME = 10
 // let afkAccumulator = 0
 
-const player = createPlayer(64, canvas.height - 245, 10, -9, 9)
+// 1800
+// const INITIAL_JUMP_SPEED = initialJumpSpeed || -600
+// const MAX_Y_SPEED = maxYSpeed || 1200
+
+const player = createPlayer(64, canvas.height - 245, 400, -400, 400)
 addEntity(player)
 
 // const player = {
@@ -218,13 +189,29 @@ registerActions([
     name: 'jump',
     keycode: '32',
   },
+  // {
+  //   name: 'left',
+  //   keycode: '65',
+  // },
+  // {
+  //   name: 'right',
+  //   keycode: '68',
+  // },
+  // {
+  //   name: 'down',
+  //   keycode: '83',
+  // },
   {
     name: 'left',
-    keycode: '65',
+    keycode: '74',
   },
   {
     name: 'right',
-    keycode: '68',
+    keycode: '76',
+  },
+  {
+    name: 'down',
+    keycode: '75',
   },
   // {
   //   name: 'shoot',
@@ -243,6 +230,8 @@ addActionDownListener('jump', () => {
 
 const init = async () => {
   await loadTextures(texturesData)
+
+  setCollisionMap(getTextureByName('collision-map'))
   // sounds = await loadAudio(soundsData)
 
   // const music = getAudioByName('music')

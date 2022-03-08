@@ -14,6 +14,8 @@ import {
   renderEntities,
 } from '../entities.mjs'
 import { createPlayer } from '../player.mjs'
+import { playerTextures } from '../texture-data.mjs'
+import { setCollisionMap } from '../collision-map.mjs'
 
 const $ = (id) => document.getElementById(id)
 
@@ -27,46 +29,7 @@ ctx.msImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
 const texturesData = [
-  {
-    src: 'move.png',
-    name: 'running',
-  },
-  {
-    src: 'move-left.png',
-    name: 'running-left',
-  },
-  {
-    src: 'jump.png',
-    name: 'jump',
-  },
-  {
-    src: 'jump-left.png',
-    name: 'jump-left',
-  },
-  {
-    src: 'fall.png',
-    name: 'fall',
-  },
-  {
-    src: 'fall-left.png',
-    name: 'fall-left',
-  },
-  {
-    src: 'land.png',
-    name: 'land',
-  },
-  {
-    src: 'land-left.png',
-    name: 'land-left',
-  },
-  {
-    src: 'stand.png',
-    name: 'idle',
-  },
-  {
-    src: 'stand-left.png',
-    name: 'idle-left',
-  },
+  ...playerTextures,
   // {
   //   src: 'ruins.png',
   //   name: 'ground',
@@ -74,6 +37,10 @@ const texturesData = [
   {
     src: 'ruins.png',
     name: 'background',
+  },
+  {
+    src: 'collision-map-ruins.png',
+    name: 'collision-map',
   },
   // {
   //   src: 'snowman.png',
@@ -101,13 +68,29 @@ registerActions([
     name: 'jump',
     keycode: '32',
   },
+  // {
+  //   name: 'left',
+  //   keycode: '65',
+  // },
+  // {
+  //   name: 'right',
+  //   keycode: '68',
+  // },
+  // {
+  //   name: 'down',
+  //   keycode: '83',
+  // },
   {
     name: 'left',
-    keycode: '65',
+    keycode: '74',
   },
   {
     name: 'right',
-    keycode: '68',
+    keycode: '76',
+  },
+  {
+    name: 'down',
+    keycode: '75',
   },
 ])
 
@@ -117,6 +100,8 @@ addActionDownListener('jump', () => {
 
 const init = async () => {
   await loadTextures(texturesData)
+
+  setCollisionMap(getTextureByName('collision-map'))
 
   window.requestAnimationFrame(update)
 }

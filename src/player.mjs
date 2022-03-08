@@ -1,6 +1,7 @@
 import { DIRECTION } from './config.mjs'
 import { getTextureByName } from './textures.mjs'
 import { getActionState } from './controller.mjs'
+import { getGroundHeightByX } from './collision-map.mjs'
 
 const PLAYER_WIDTH = 32
 const PLAYER_HEIGHT = 50
@@ -13,12 +14,13 @@ const LEFT = -1
 const RIGHT = 1
 // const GRAVITY = 35
 const FRAMES = 8
+const FALL_TIME = 0.25
 
 export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
-  const GRAVITY = gravity || 35
-  const INITIAL_JUMP_SPEED = initialJumpSpeed || -10
-  const MAX_Y_SPEED = maxYSpeed || 60
-  const GROUND = y
+  const GRAVITY = gravity || 1800
+  const INITIAL_JUMP_SPEED = initialJumpSpeed || -600
+  const MAX_Y_SPEED = maxYSpeed || 1200
+  // const GROUND = y
 
   const player = {
     x,
@@ -31,85 +33,210 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     accumulator: 0,
     fps: 8,
     grounded: false,
+    groundedCounter: 0,
+  }
+
+  player.setSprite = (sprite) => {
+    player.sprite = sprite
+    player.accumulator = 0
+    player.frame = 0
+    player.fps = 8
+  }
+
+  player.states = {
+    idle: (dt) => {
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      if (getActionState('down')) {
+        player.crouch()
+        return
+      }
+
+      if (
+        (getActionState('left') || getActionState('right')) &&
+        !(getActionState('left') && getActionState('right'))
+      ) {
+        player.setSprite('running')
+      }
+    },
+    running: (dt) => {
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      if (getActionState('down')) {
+        player.crouch()
+        return
+      }
+
+      if (getActionState('left') && getActionState('right')) {
+        player.xSpeed = 0
+        player.setSprite('idle')
+        return
+      } else if (!getActionState('left') && !getActionState('right')) {
+        player.xSpeed = 0
+        player.setSprite('idle')
+        return
+      }
+
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      player.frame = player.frame % FRAMES
+
+      player.move()
+    },
+    jump: (dt) => {
+      if (player.ySpeed >= 0) {
+        player.setSprite('fall')
+      }
+
+      if (getActionState('left') && !getActionState('right')) {
+        player.facing = LEFT
+        player.xSpeed = -MOVE_SPEED
+      } else if (getActionState('right') && !getActionState('left')) {
+        player.facing = RIGHT
+        player.xSpeed = MOVE_SPEED
+      } else {
+        player.xSpeed = 0
+      }
+    },
+    fall: (dt) => {
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      if (player.frame > 1) {
+        player.frame = 1
+      }
+
+      if (player.grounded) {
+        player.setSprite('land')
+        player.fps = 12
+      }
+
+      player.move()
+    },
+    land: (dt) => {
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      if (getActionState('down')) {
+        player.crouch()
+        return
+      }
+
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      if (player.frame > 0) {
+        if (
+          (getActionState('left') || getActionState('right')) &&
+          !(getActionState('left') && getActionState('right'))
+        ) {
+          player.setSprite('running')
+          return
+        } else {
+          player.setSprite('idle')
+          player.xSpeed = 0
+          return
+        }
+      }
+
+      player.move()
+    },
+    crouch: (dt) => {
+      if (getActionState('left') && !getActionState('right')) {
+        player.facing = LEFT
+      } else if (getActionState('right') && !getActionState('left')) {
+        player.facing = RIGHT
+      }
+
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      if (player.frame > 1) {
+        player.frame = 1
+      }
+
+      if (!getActionState('down')) {
+        player.setSprite('crouch-stand')
+        player.fps = 32
+        return
+      }
+    },
+    ['crouch-stand']: (dt) => {
+      if (getActionState('left') && !getActionState('right')) {
+        player.facing = LEFT
+      } else if (getActionState('right') && !getActionState('left')) {
+        player.facing = RIGHT
+      }
+
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      if (player.frame > 1) {
+        player.setSprite('idle')
+      }
+    },
   }
 
   player.update = (dt) => {
-    player.accumulator += dt
-    while (player.accumulator >= (1 / player.fps)) {
-      player.accumulator -= (1 / player.fps)
-      player.frame++
-    }
-    if (player.sprite === 'running') {
-      player.frame = player.frame % FRAMES
-    } else if (player.sprite === 'land' && player.frame > 1) {
-      player.sprite = 'running'
-      player.accumulator = 0
-      player.frame = 0
-      player.fps = 8
-    } else if (player.frame > 1) {
-      player.frame = 1
-    }
-
     player.ySpeed += GRAVITY * dt
-
-    // if (player.ySpeed < 0 && !getActionState('jump')) {
-    //   player.ySpeed -= player.ySpeed * dt * 12
-    //   if (player.ySpeed > 0) {
-    //     player.ySpeed = 0
-    //   }
-    // }
-
     player.ySpeed = Math.min(player.ySpeed, MAX_Y_SPEED)
+    player.y += player.ySpeed * dt
+    player.x += player.xSpeed * dt
 
-    player.y += player.ySpeed
+    const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+
+    if (player.grounded) {
+      if (Math.abs(player.y - GROUND) < 20) {
+        player.y = GROUND
+      }
+    }
 
     if (player.y >= GROUND) {
       player.ySpeed = 0
       player.y = GROUND
       player.grounded = true
-      if (player.sprite === 'jump' || player.sprite === 'fall') {
-        player.sprite = 'land'
-        player.frame = 0
-        player.accumulator = 0
-        player.fps = 16
+    } else {
+      if (player.groundedCounter > FALL_TIME) {
+        player.grounded = false
+        player.groundedCounter = 0
+      } else {
+        player.groundedCounter += dt
       }
     }
 
-    if (player.ySpeed > 0 && player.sprite !== 'fall') {
-      player.sprite = 'fall'
-      player.frame = 0
-      player.accumulator = 0
-    }
-
-    player.xSpeed = 0
-    if (getActionState('left')) {
-      player.xSpeed -= MOVE_SPEED
-      player.facing = LEFT
-      // afkAccumulator = 0
-    }
-    if (getActionState('right')) {
-      player.xSpeed += MOVE_SPEED
-      player.facing = RIGHT
-      // afkAccumulator = 0
-    }
-
-    if (player.xSpeed === 0 && player.sprite === 'running') {
-      player.sprite = 'idle'
-      player.frame = 0
-      player.accumulator = 0
-      player.fps = 8
-    } else if (player.sprite === 'idle' && player.xSpeed !== 0) {
-      player.sprite = 'running'
-      player.frame = 0
-      player.accumulator = 0
-      player.fps = 8
-    }
-
-    player.x += player.xSpeed * dt
+    player.states[player.sprite](dt)
   }
 
   player.jump = () => {
-    // afkAccumulator = 0
     if (player.grounded) {
       player.ySpeed = INITIAL_JUMP_SPEED
       player.grounded = false
@@ -120,33 +247,41 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     }
   }
 
+  player.crouch = () => {
+    player.setSprite('crouch')
+    player.fps = 32
+    player.xSpeed = 0
+  }
+
+  player.move = () => {
+    if (getActionState('left') && !getActionState('right')) {
+      player.facing = LEFT
+      player.xSpeed = -MOVE_SPEED
+    } else if (getActionState('right') && !getActionState('left')) {
+      player.facing = RIGHT
+      player.xSpeed = MOVE_SPEED
+    } else {
+      player.xSpeed = 0
+    }
+  }
+
   player.render = (ctx, canvas) => {
     const character = getTextureByName(
       player.facing === DIRECTION.RIGHT ?
         player.sprite :
         `${player.sprite}-left`
     )
-    if (player.sprite === 'running' || player.sprite === 'fall') {
-      ctx.drawImage(
-        character,
-        player.frame * PLAYER_WIDTH,
-        0,
-        PLAYER_WIDTH,
-        PLAYER_HEIGHT,
-        player.x,
-        player.y,
-        PLAYER_WIDTH * 2,
-        PLAYER_HEIGHT * 2,
-      )
-    } else {
-      ctx.drawImage(
-        character,
-        player.x,
-        player.y,
-        PLAYER_WIDTH * 2,
-        PLAYER_HEIGHT * 2,
-      )
-    }
+    ctx.drawImage(
+      character,
+      player.frame * PLAYER_WIDTH,
+      0,
+      PLAYER_WIDTH,
+      PLAYER_HEIGHT,
+      player.x,
+      player.y,
+      PLAYER_WIDTH * 2,
+      PLAYER_HEIGHT * 2,
+    )
   }
 
   return player
