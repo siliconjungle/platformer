@@ -217,6 +217,10 @@ registerActions([
     name: 'down',
     keycode: '75',
   },
+  {
+    name: 'restart',
+    keycode: '82',
+  },
   // {
   //   name: 'down',
   //   keycode: '83',
@@ -229,6 +233,10 @@ registerActions([
 
 addActionDownListener('jump', () => {
   player.jump()
+})
+
+addActionDownListener(('restart'), () => {
+  player.respawn()
 })
 
 // addActionDownListener('shoot', () => {

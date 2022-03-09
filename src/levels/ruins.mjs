@@ -92,10 +92,18 @@ registerActions([
     name: 'down',
     keycode: '75',
   },
+  {
+    name: 'restart',
+    keycode: '82',
+  },
 ])
 
 addActionDownListener('jump', () => {
   player.jump()
+})
+
+addActionDownListener(('restart'), () => {
+  player.respawn()
 })
 
 const init = async () => {

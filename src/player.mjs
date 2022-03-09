@@ -25,6 +25,8 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
   const player = {
     x,
     y,
+    startX: x,
+    startY: y,
     facing: DIRECTION.RIGHT,
     sprite: 'idle',
     xSpeed: 0,
@@ -288,6 +290,11 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
       player.fps = 8
       player.gravity = true
     }
+  }
+
+  player.respawn = () => {
+    player.x = player.startX
+    player.y = player.startY
   }
 
   player.vault = (ground) => {
