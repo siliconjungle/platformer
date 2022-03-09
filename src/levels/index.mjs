@@ -44,18 +44,18 @@ const texturesData = [
     src: 'background.png',
     name: 'background',
   },
-  {
-    src: 'dt.png',
-    name: 'dt',
-  },
-  {
-    src: 'dt3.png',
-    name: 'dt2',
-  },
-  {
-    src: 'dt4.png',
-    name: 'dt3',
-  },
+  // {
+  //   src: 'dt.png',
+  //   name: 'dt',
+  // },
+  // {
+  //   src: 'dt3.png',
+  //   name: 'dt2',
+  // },
+  // {
+  //   src: 'dt4.png',
+  //   name: 'dt3',
+  // },
   // {
   //   src: 'avatar.png',
   //   name: 'avatar',
@@ -112,10 +112,10 @@ const texturesData = [
   //   src: 'squid.png',
   //   name: 'squid',
   // },
-  {
-    src: 'boss2.png',
-    name: 'boss2',
-  },
+  // {
+  //   src: 'boss2.png',
+  //   name: 'boss2',
+  // },
   // {
   //   src: 'blast.png',
   //   name: 'blast',
@@ -124,10 +124,10 @@ const texturesData = [
   //   src: 'blast-left.png',
   //   name: 'blast-left',
   // },
-  {
-    src: 'leaf.png',
-    name: 'leaf',
-  },
+  // {
+  //   src: 'leaf.png',
+  //   name: 'leaf',
+  // },
 ]
 
 // const soundsData = [
@@ -307,10 +307,10 @@ const render = () => {
   // const boss2 = getTextureByName('boss2')
   // const shot = getTextureByName('blast')
   // const shotLeft = getTextureByName('blast-left')
-  const leaf = getTextureByName('leaf')
-  const dt = getTextureByName('dt')
-  const dt2 = getTextureByName('dt2')
-  const dt3 = getTextureByName('dt3')
+  // const leaf = getTextureByName('leaf')
+  // const dt = getTextureByName('dt')
+  // const dt2 = getTextureByName('dt2')
+  // const dt3 = getTextureByName('dt3')
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -411,13 +411,13 @@ const render = () => {
   //   pumpkin.height * 2,
   // )
 
-  ctx.drawImage(
-    leaf,
-    canvas.width - leaf.width * 6,
-    canvas.height - ground.height * 2 - leaf.height * 1.6,
-    leaf.width,
-    leaf.height,
-  )
+  // ctx.drawImage(
+  //   leaf,
+  //   canvas.width - leaf.width * 6,
+  //   canvas.height - ground.height * 2 - leaf.height * 1.6,
+  //   leaf.width,
+  //   leaf.height,
+  // )
 
   // ctx.drawImage(
   //   dt,

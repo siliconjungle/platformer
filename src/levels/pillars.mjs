@@ -189,7 +189,7 @@ const render = () => {
   ctx.drawImage(
     spikes,
     ground4.width * 2 + 48 + ground5.width * 2 + 64,
-    canvas.height - ground6.height * 2 - spikes.height * 0.5,
+    canvas.height - ground6.height * 2 - spikes.height * 0.5 + 5,
     spikes.width * 2,
     spikes.height * 2,
   )
