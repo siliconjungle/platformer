@@ -20,6 +20,7 @@ import { createPlayer } from '../player.mjs'
 // } from './audio.mjs'
 import { playerTextures } from '../texture-data.mjs'
 import { setCollisionMap } from '../collision-map.mjs'
+import { createSpaceship } from '../spaceship.mjs'
 
 const $ = (id) => document.getElementById(id)
 
@@ -47,6 +48,10 @@ const texturesData = [
   {
     src: 'collision-map.png',
     name: 'collision-map',
+  },
+  {
+    src: 'spaceship.png',
+    name: 'spaceship',
   },
   // {
   //   src: 'avatar.png',
@@ -143,7 +148,18 @@ let dt = 0
 // const INITIAL_JUMP_SPEED = initialJumpSpeed || -600
 // const MAX_Y_SPEED = maxYSpeed || 1200
 
+const randomRange = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min)
+
 const player = createPlayer(64, canvas.height - 245, 400, -400, 400)
+
+const spawnSpaceship = () => {
+  const spaceship = createSpaceship(640, randomRange(0, 240))
+  addEntity(spaceship)
+  setTimeout(spawnSpaceship, randomRange(1, 3) * 1000)
+}
+
+spawnSpaceship()
 addEntity(player)
 
 // const player = {
@@ -282,6 +298,7 @@ const update = () => {
 }
 
 const render = () => {
+  const spaceship = getTextureByName('spaceship')
   const ground = getTextureByName('ground')
   // const ground2 = getTextureByName('ground2')
   // const ground3 = getTextureByName('ground3')
