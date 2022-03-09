@@ -55,4 +55,12 @@ export const playerTextures = [
     src: 'stand-left.png',
     name: 'idle-left',
   },
+  {
+    src: 'vault.png',
+    name: 'vault',
+  },
+  {
+    src: 'vault-left.png',
+    name: 'vault-left',
+  },
 ]

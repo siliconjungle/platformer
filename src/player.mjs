@@ -34,6 +34,7 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     fps: 8,
     grounded: false,
     groundedCounter: 0,
+    gravity: true,
   }
 
   player.setSprite = (sprite) => {
@@ -156,6 +157,21 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
 
       player.move()
     },
+    vault: (dt) => {
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      if (player.frame > 0) {
+        player.frame = 0
+        player.setSprite('land')
+        player.fps = 12
+        const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+        player.y = GROUND
+        player.gravity = true
+      }
+    },
     crouch: (dt) => {
       if (getActionState('left') && !getActionState('right')) {
         player.facing = LEFT
@@ -207,29 +223,50 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
   }
 
   player.update = (dt) => {
-    player.ySpeed += GRAVITY * dt
-    player.ySpeed = Math.min(player.ySpeed, MAX_Y_SPEED)
-    player.y += player.ySpeed * dt
+    const lastPlayerX = player.x
     player.x += player.xSpeed * dt
 
-    const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+    if (player.gravity) {
+      player.ySpeed += GRAVITY * dt
+      player.ySpeed = Math.min(player.ySpeed, MAX_Y_SPEED)
+      player.y += player.ySpeed * dt
 
-    if (player.grounded) {
-      if (Math.abs(player.y - GROUND) < 20) {
-        player.y = GROUND
+      // const nextPlayerX = player.x + player.xSpeed * dt
+      // player.x = nextPlayerX
+
+      const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+
+      if (player.grounded) {
+        if (Math.abs(player.y - GROUND) < 30) {
+          player.y = GROUND
+        }
       }
-    }
 
-    if (player.y >= GROUND) {
-      player.ySpeed = 0
-      player.y = GROUND
-      player.grounded = true
-    } else {
-      if (player.groundedCounter > FALL_TIME) {
-        player.grounded = false
-        player.groundedCounter = 0
+      if (player.y >= GROUND) {
+        if (player.y > GROUND + 30 && player.y < GROUND + 80) {
+          player.ySpeed = 0
+          player.grounded = true
+          player.vault(GROUND)
+        } else if (player.y < GROUND + 30) {
+          player.grounded = true
+          player.ySpeed = 0
+          player.y = GROUND
+        } else {
+          player.x = lastPlayerX
+          const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+          if (Math.abs(player.y - GROUND) < 30 && player.ySpeed >= 0) {
+            player.y = GROUND
+            player.ySpeed = 0
+            player.grounded = true
+          }
+        }
       } else {
-        player.groundedCounter += dt
+        if (player.groundedCounter > FALL_TIME) {
+          player.grounded = false
+          player.groundedCounter = 0
+        } else {
+          player.groundedCounter += dt
+        }
       }
     }
 
@@ -237,6 +274,11 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
   }
 
   player.jump = () => {
+    if (player.sprite === 'vault') {
+      const GROUND = getGroundHeightByX(Math.floor(player.x + PLAYER_WIDTH)) - (PLAYER_HEIGHT * 2)
+      player.y = GROUND
+      player.grounded = true
+    }
     if (player.grounded) {
       player.ySpeed = INITIAL_JUMP_SPEED
       player.grounded = false
@@ -244,7 +286,19 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
       player.frame = 0
       player.accumulator = 0
       player.fps = 8
+      player.gravity = true
     }
+  }
+
+  player.vault = (ground) => {
+    player.setSprite('vault')
+    player.y = ground + 20
+    player.gravity = false
+    player.fps = 6
+    player.frame = 0
+    player.xSpeed = 0
+    player.grounded = true
+    player.ySpeed = 0
   }
 
   player.crouch = () => {

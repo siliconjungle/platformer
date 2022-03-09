@@ -44,6 +44,18 @@ const texturesData = [
     src: 'background.png',
     name: 'background',
   },
+  {
+    src: 'dt.png',
+    name: 'dt',
+  },
+  {
+    src: 'dt3.png',
+    name: 'dt2',
+  },
+  {
+    src: 'dt4.png',
+    name: 'dt3',
+  },
   // {
   //   src: 'avatar.png',
   //   name: 'avatar',
@@ -296,6 +308,9 @@ const render = () => {
   // const shot = getTextureByName('blast')
   // const shotLeft = getTextureByName('blast-left')
   const leaf = getTextureByName('leaf')
+  const dt = getTextureByName('dt')
+  const dt2 = getTextureByName('dt2')
+  const dt3 = getTextureByName('dt3')
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -352,6 +367,14 @@ const render = () => {
   //   boss2.height * 2,
   // )
 
+  // ctx.drawImage(
+  //   dt2,
+  //   canvas.width - dt2.width * 4,
+  //   canvas.height - ground.height * 2 - dt2.height * 1.6,
+  //   dt2.width * 2,
+  //   dt2.height * 2,
+  // )
+
   ctx.drawImage(
     man,
     canvas.width - man.width * 3,
@@ -395,6 +418,22 @@ const render = () => {
     leaf.width,
     leaf.height,
   )
+
+  // ctx.drawImage(
+  //   dt,
+  //   canvas.width - dt.width * 6,
+  //   canvas.height - ground.height * 2 - dt.height * 1.6,
+  //   dt.width * 2,
+  //   dt.height * 2,
+  // )
+  //
+  // ctx.drawImage(
+  //   dt3,
+  //   canvas.width - dt3.width * 3,
+  //   canvas.height - ground.height * 2 - dt3.height * 1.6,
+  //   dt3.width * 2,
+  //   dt3.height * 2,
+  // )
 
   ctx.drawImage(
     ground,

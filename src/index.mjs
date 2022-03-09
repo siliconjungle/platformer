@@ -5,6 +5,7 @@ const pathnames = [
   '/night',
   '/shadows',
   '/ruins',
+  '/pillars',
 ]
 
 const { pathname } = window.location
