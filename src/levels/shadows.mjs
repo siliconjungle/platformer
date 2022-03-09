@@ -103,6 +103,11 @@ const init = async () => {
 
   setCollisionMap(getTextureByName('collision-map'))
 
+  // Just know that any lag will make the player fall through the floor.
+  lastTime = (new Date()).getTime()
+  currentTime = 0
+  dt = 0
+
   window.requestAnimationFrame(update)
 }
 

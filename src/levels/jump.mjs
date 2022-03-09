@@ -251,6 +251,12 @@ addActionDownListener('jump', () => {
 const init = async () => {
   await loadTextures(texturesData)
   setCollisionMap(getTextureByName('collision-map'))
+
+  // Just know that any lag will make the player fall through the floor.
+  lastTime = (new Date()).getTime()
+  currentTime = 0
+  dt = 0
+
   // sounds = await loadAudio(soundsData)
 
   // const music = getAudioByName('music')
