@@ -45,6 +45,6 @@ export const getColorAtPos = (x, y) => {
 }
 
 export const getGroundHeightByX = x => {
-  return heightMap[x] || 479
+  return heightMap[x] ?? 479
   // console.log('_HEIGHT_', height)
 }

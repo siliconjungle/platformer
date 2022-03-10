@@ -95,6 +95,36 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
 
       player.move()
     },
+    push: (dt) => {
+      if (!player.grounded) {
+        player.setSprite('fall')
+        return
+      }
+
+      if (getActionState('down')) {
+        player.crouch()
+        return
+      }
+
+      if (getActionState('left') && getActionState('right')) {
+        player.xSpeed = 0
+        player.setSprite('idle')
+        return
+      } else if (!getActionState('left') && !getActionState('right')) {
+        player.xSpeed = 0
+        player.setSprite('idle')
+        return
+      }
+
+      player.accumulator += dt
+      while (player.accumulator >= (1 / player.fps)) {
+        player.accumulator -= (1 / player.fps)
+        player.frame++
+      }
+      player.frame = player.frame % FRAMES
+
+      player.move()
+    },
     jump: (dt) => {
       if (player.ySpeed >= 0) {
         player.setSprite('fall')
@@ -260,6 +290,7 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
             player.y = GROUND
             player.ySpeed = 0
             player.grounded = true
+            player.push()
           }
         }
       } else {
@@ -295,6 +326,14 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
   player.respawn = () => {
     player.x = player.startX
     player.y = player.startY
+  }
+
+  player.push = () => {
+    player.setSprite('push')
+    player.fps = 0
+    player.frame = 0
+    player.xSpeed = 0
+    player.ySpeed = 0
   }
 
   player.vault = (ground) => {
