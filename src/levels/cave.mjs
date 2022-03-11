@@ -1,4 +1,5 @@
 import {
+  clearKeys,
   registerActions,
   addActionDownListener,
   handleKeyDown,
@@ -51,7 +52,7 @@ let lastTime = (new Date()).getTime()
 let currentTime = 0
 let dt = 0
 
-const player = createPlayer(64, canvas.height - 120)
+const player = createPlayer(64, canvas.height - 150)
 addEntity(player)
 
 document.addEventListener('keydown', (e) => {
@@ -126,9 +127,25 @@ const update = () => {
 
   updateEntities(dt)
 
+  if (player.x + 32 < 0) {
+    window.location.href = '/shadows'
+  }
+
   render()
 
   lastTime = currentTime
+}
+
+window.onpageshow = () => {
+  player.x = player.startX
+  player.y = player.startY
+  player.setSprite('idle')
+  player.xSpeed = 0
+  player.ySpeed = 0
+  currentTime = (new Date()).getTime()
+  dt = (currentTime - lastTime) / 1000
+  lastTime = currentTime
+  clearKeys()
 }
 
 const render = () => {

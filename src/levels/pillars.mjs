@@ -1,4 +1,5 @@
 import {
+  clearKeys,
   registerActions,
   addActionDownListener,
   handleKeyDown,
@@ -138,9 +139,27 @@ const update = () => {
 
   updateEntities(dt)
 
+  if (player.x + 32 < 0) {
+    window.location.href = '/jump'
+  } else if (player.x + 32 > canvas.width) {
+    window.location.href = '/leap-of-faith'
+  }
+
   render()
 
   lastTime = currentTime
+}
+
+window.onpageshow = () => {
+  player.x = player.startX
+  player.y = player.startY
+  player.setSprite('idle')
+  player.xSpeed = 0
+  player.ySpeed = 0
+  currentTime = (new Date()).getTime()
+  dt = (currentTime - lastTime) / 1000
+  lastTime = currentTime
+  clearKeys()
 }
 
 const render = () => {

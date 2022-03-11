@@ -5,7 +5,7 @@ const actionUpEmitter = new EventEmitter()
 
 // Stores the state of each action as a true or false value
 // e.g. forward: true
-const actionStates = {}
+let actionStates = {}
 // Stores the mapping between keys and actions
 // e.g. 47: 'forward'
 const keyMapping = {}
@@ -39,6 +39,10 @@ export const handleKeyUp = e => {
     actionStates[actionName] = false
     actionUpEmitter.emit(actionName)
   }
+}
+
+export const clearKeys = e => {
+  actionStates = {}
 }
 
 export const addActionDownListener = (actionName, callback) => {
