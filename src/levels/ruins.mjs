@@ -13,10 +13,13 @@ import {
   addEntity,
   updateEntities,
   renderEntities,
+  // debugRenderEntities,
 } from '../entities.mjs'
 import { createPlayer } from '../player.mjs'
 import { playerTextures } from '../texture-data.mjs'
 import { setCollisionMap } from '../collision-map.mjs'
+import { createSpikes } from '../spikes.mjs'
+import { rectanglesOverlap } from '../collisions.mjs'
 
 const $ = (id) => document.getElementById(id)
 
@@ -43,6 +46,10 @@ const texturesData = [
     src: 'collision-map-ruins.png',
     name: 'collision-map',
   },
+  {
+    src: 'spikes.png',
+    name: 'spikes',
+  },
   // {
   //   src: 'snowman.png',
   //   name: 'snowman',
@@ -55,6 +62,11 @@ let dt = 0
 
 const player = createPlayer(8, canvas.height - 286)
 addEntity(player)
+
+const spikes = createSpikes(128 + 64, canvas.height - 148)
+const spikes2 = createSpikes(256 + 64, canvas.height - 148)
+addEntity(spikes)
+addEntity(spikes2)
 
 document.addEventListener('keydown', (e) => {
   handleKeyDown(e)
@@ -134,6 +146,14 @@ const update = () => {
     window.location.href = '/shadows'
   }
 
+  if (rectanglesOverlap(player.getCollider(), spikes.getCollider())) {
+    player.respawn()
+  }
+
+  if (rectanglesOverlap(player.getCollider(), spikes2.getCollider())) {
+    player.respawn()
+  }
+
   render()
 
   lastTime = currentTime
@@ -168,6 +188,7 @@ const render = () => {
   )
 
   renderEntities(ctx, canvas)
+  // debugRenderEntities(ctx, canvas)
 
   // ctx.drawImage(
   //   snowman,

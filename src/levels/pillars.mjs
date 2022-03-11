@@ -13,10 +13,13 @@ import {
   addEntity,
   updateEntities,
   renderEntities,
+  // debugRenderEntities,
 } from '../entities.mjs'
 import { createPlayer } from '../player.mjs'
 import { playerTextures } from '../texture-data.mjs'
 import { setCollisionMap } from '../collision-map.mjs'
+import { createSpikes } from '../spikes.mjs'
+import { rectanglesOverlap } from '../collisions.mjs'
 
 const $ = (id) => document.getElementById(id)
 
@@ -79,6 +82,11 @@ let dt = 0
 
 const player = createPlayer(64, canvas.height - 400)
 addEntity(player)
+
+const spikes = createSpikes(136, canvas.height - 98)
+const spikes2 = createSpikes(371, canvas.height - 137)
+addEntity(spikes)
+addEntity(spikes2)
 
 document.addEventListener('keydown', (e) => {
   handleKeyDown(e)
@@ -145,6 +153,14 @@ const update = () => {
     window.location.href = '/leap-of-faith'
   }
 
+  if (rectanglesOverlap(player.getCollider(), spikes.getCollider())) {
+    player.respawn()
+  }
+
+  if (rectanglesOverlap(player.getCollider(), spikes2.getCollider())) {
+    player.respawn()
+  }
+
   render()
 
   lastTime = currentTime
@@ -169,7 +185,7 @@ const render = () => {
   const ground6 = getTextureByName('ground6')
   const groundFloating = getTextureByName('ground-floating')
   // const lava = getTextureByName('lava')
-  const spikes = getTextureByName('spikes')
+  // const spikes = getTextureByName('spikes')
   const leaf = getTextureByName('leaf')
   const background = getTextureByName('background')
 
@@ -193,6 +209,7 @@ const render = () => {
   // )
 
   renderEntities(ctx, canvas)
+  // debugRenderEntities(ctx, canvas)
 
   ctx.drawImage(
     ground4,
@@ -202,13 +219,13 @@ const render = () => {
     ground4.height * 2,
   )
 
-  ctx.drawImage(
-    spikes,
-    ground4.width * 2 + 5,
-    canvas.height - ground5.height * 2 - spikes.height * 0.5,
-    spikes.width * 2,
-    spikes.height * 2,
-  )
+  // ctx.drawImage(
+  //   spikes,
+  //   ground4.width * 2 + 5,
+  //   canvas.height - ground5.height * 2 - spikes.height * 0.5,
+  //   spikes.width * 2,
+  //   spikes.height * 2,
+  // )
 
   ctx.drawImage(
     ground5,
@@ -218,13 +235,13 @@ const render = () => {
     ground5.height * 2,
   )
 
-  ctx.drawImage(
-    spikes,
-    ground4.width * 2 + 48 + ground5.width * 2 + 64,
-    canvas.height - ground6.height * 2 - spikes.height * 0.5 + 5,
-    spikes.width * 2,
-    spikes.height * 2,
-  )
+  // ctx.drawImage(
+  //   spikes,
+  //   ground4.width * 2 + 48 + ground5.width * 2 + 64,
+  //   canvas.height - ground6.height * 2 - spikes.height * 0.5 + 5,
+  //   spikes.width * 2,
+  //   spikes.height * 2,
+  // )
 
   ctx.drawImage(
     ground6,

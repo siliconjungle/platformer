@@ -13,6 +13,7 @@ import {
   addEntity,
   updateEntities,
   renderEntities,
+  // debugRenderEntities,
 } from '../entities.mjs'
 import { createPlayer } from '../player.mjs'
 // import {
@@ -21,6 +22,8 @@ import { createPlayer } from '../player.mjs'
 // } from './audio.mjs'
 import { playerTextures } from '../texture-data.mjs'
 import { setCollisionMap } from '../collision-map.mjs'
+import { createSpikes } from '../spikes.mjs'
+import { rectanglesOverlap } from '../collisions.mjs'
 
 const $ = (id) => document.getElementById(id)
 
@@ -57,14 +60,14 @@ const texturesData = [
     src: 'background.png',
     name: 'background',
   },
-  {
-    src: 'shadow.png',
-    name: 'shadow',
-  },
-  {
-    src: 'chains.png',
-    name: 'chains',
-  },
+  // {
+  //   src: 'shadow.png',
+  //   name: 'shadow',
+  // },
+  // {
+  //   src: 'chains.png',
+  //   name: 'chains',
+  // },
   {
     src: 'spikes.png',
     name: 'spikes',
@@ -150,7 +153,7 @@ const texturesData = [
 //   },
 // ]
 
-let running = false
+// let running = false
 
 // const AVATAR_WIDTH = 40
 // const AVATAR_HEIGHT = 40
@@ -166,6 +169,11 @@ let dt = 0
 
 const player = createPlayer(64, canvas.height - 245)
 addEntity(player)
+
+const spikes = createSpikes(128, canvas.height - 168)
+const spikes2 = createSpikes(256, canvas.height - 168)
+addEntity(spikes)
+addEntity(spikes2)
 
 // const player = {
 //   x: PLAYER_WIDTH * 2,
@@ -316,6 +324,14 @@ const update = () => {
     window.location.href = '/pillars'
   }
 
+  if (rectanglesOverlap(player.getCollider(), spikes.getCollider())) {
+    player.respawn()
+  }
+
+  if (rectanglesOverlap(player.getCollider(), spikes2.getCollider())) {
+    player.respawn()
+  }
+
   render()
 
   lastTime = currentTime
@@ -339,9 +355,8 @@ const render = () => {
   const ground3 = getTextureByName('ground3')
   const lava = getTextureByName('lava')
   const background = getTextureByName('background')
-  const shadow = getTextureByName('shadow')
+  // const shadow = getTextureByName('shadow')
   // const chains = getTextureByName('chains')
-  const spikes = getTextureByName('spikes')
   // const avatar = getTextureByName(player.spriteAvatar)
   // const boss = getTextureByName('boss')
   // const pumpkin = getTextureByName('pumpkin')
@@ -463,15 +478,16 @@ const render = () => {
     lava.height * 2,
   )
 
-  ctx.drawImage(
-    shadow,
-    canvas.width - shadow.width * 3,
-    canvas.height - ground3.height * 2 - shadow.height * 2 + 15,
-    shadow.width * 2,
-    shadow.height * 2,
-  )
+  // ctx.drawImage(
+  //   shadow,
+  //   canvas.width - shadow.width * 3,
+  //   canvas.height - ground3.height * 2 - shadow.height * 2 + 15,
+  //   shadow.width * 2,
+  //   shadow.height * 2,
+  // )
 
   renderEntities(ctx, canvas)
+  // debugRenderEntities(ctx, canvas)
 
   // ctx.drawImage(
   //   chains,
@@ -480,22 +496,6 @@ const render = () => {
   //   chains.width * 2,
   //   chains.height * 2,
   // )
-
-  ctx.drawImage(
-    spikes,
-    128,
-    canvas.height - ground2.height * 2 - 10,
-    spikes.width * 2,
-    spikes.height * 2,
-  )
-
-  ctx.drawImage(
-    spikes,
-    256,
-    canvas.height - ground2.height * 2 - 10,
-    spikes.width * 2,
-    spikes.height * 2,
-  )
 
   ctx.drawImage(
     ground2,

@@ -38,9 +38,9 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     groundedCounter: 0,
     gravity: true,
     collider: {
-      x: 0,
+      x: PLAYER_WIDTH * 0.5,
       y: 0,
-      width: PLAYER_WIDTH * 2,
+      width: PLAYER_WIDTH,
       height: PLAYER_HEIGHT * 2,
     }
   }
@@ -288,7 +288,11 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
       }
 
       if (player.y >= GROUND) {
-        if (player.y > GROUND + 30 && player.y < GROUND + 80) {
+        if (player.y > GROUND + 30 && player.y < GROUND + 110 && player.grounded === false) {
+          player.ySpeed = 0
+          player.grounded = true
+          player.vault(GROUND)
+        } else if (player.y > GROUND + 30 && player.y < GROUND + 70) {
           player.ySpeed = 0
           player.grounded = true
           player.vault(GROUND)

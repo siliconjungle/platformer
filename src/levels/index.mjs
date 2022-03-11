@@ -13,10 +13,13 @@ import {
   addEntity,
   updateEntities,
   renderEntities,
+  // debugRenderEntities,
 } from '../entities.mjs'
 import { createPlayer } from '../player.mjs'
 import { playerTextures } from '../texture-data.mjs'
 import { setCollisionMap } from '../collision-map.mjs'
+import { createLeaf } from '../leaf.mjs'
+import { rectanglesOverlap } from '../collisions.mjs'
 // import {
 //   loadAudio,
 //   getAudioByName,
@@ -85,13 +88,21 @@ const texturesData = [
   //   src: 'green-gem.png',
   //   name: 'purple-gem',
   // },
+  // {
+  //   src: 'man.png',
+  //   name: 'man',
+  // },
+  // {
+  //   src: 'man2.png',
+  //   name: 'man2',
+  // },
   {
-    src: 'man.png',
-    name: 'man',
+    src: 'sign.png',
+    name: 'sign',
   },
   {
-    src: 'man2.png',
-    name: 'man2',
+    src: 'leaf.png',
+    name: 'leaf',
   },
   {
     src: 'collision-map.png',
@@ -154,6 +165,9 @@ let dt = 0
 
 const player = createPlayer(64, canvas.height - 245)
 addEntity(player)
+
+const leaf = createLeaf(canvas.width * 0.5 - 13, canvas.height - 200)
+addEntity(leaf)
 
 // const player = {
 //   x: PLAYER_WIDTH * 2,
@@ -303,6 +317,10 @@ const update = () => {
     window.location.href = '/jump'
   }
 
+  if (rectanglesOverlap(player.getCollider(), leaf.getCollider())) {
+    leaf.dead = true
+  }
+
   render()
 
   lastTime = currentTime
@@ -323,13 +341,14 @@ window.onpageshow = () => {
 const render = () => {
   const ground = getTextureByName('ground')
   const background = getTextureByName('background')
+  const sign = getTextureByName('sign')
   // const avatar = getTextureByName(player.spriteAvatar)
   // const boss = getTextureByName('boss')
   // const pumpkin = getTextureByName('pumpkin')
   // const redGem = getTextureByName('red-gem')
   // const greenGem = getTextureByName('green-gem')
-  const man = getTextureByName('man')
-  const man2 = getTextureByName('man2')
+  // const man = getTextureByName('man')
+  // const man2 = getTextureByName('man2')
   // const mage = getTextureByName('mage')
   // const mage2 = getTextureByName('mage2')
   // const squid = getTextureByName('squid')
@@ -406,22 +425,23 @@ const render = () => {
   // )
 
   ctx.drawImage(
-    man,
-    canvas.width - man.width * 3,
-    canvas.height - ground.height * 2 - man.height * 1.6,
-    man.width * 2,
-    man.height * 2,
+    sign,
+    canvas.width - 128,
+    canvas.height - ground.height * 2 - 40,
+    sign.width * 2,
+    sign.height * 2,
   )
 
-  ctx.drawImage(
-    man2,
-    canvas.width - man2.width * 6,
-    canvas.height - ground.height * 2 - man2.height * 1.6,
-    man2.width * 2,
-    man2.height * 2,
-  )
+  // ctx.drawImage(
+  //   man2,
+  //   canvas.width - man2.width * 6,
+  //   canvas.height - ground.height * 2 - man2.height * 1.6,
+  //   man2.width * 2,
+  //   man2.height * 2,
+  // )
 
   renderEntities(ctx, canvas)
+  // debugRenderEntities(ctx, canvas)
 
   // blasts.forEach(blast => {
   //   ctx.drawImage(
