@@ -37,6 +37,12 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     grounded: false,
     groundedCounter: 0,
     gravity: true,
+    collider: {
+      x: 0,
+      y: 0,
+      width: PLAYER_WIDTH * 2,
+      height: PLAYER_HEIGHT * 2,
+    }
   }
 
   player.setSprite = (sprite) => {
@@ -45,6 +51,13 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     player.frame = 0
     player.fps = 8
   }
+
+  player.getCollider = () => ({
+    x: player.x + player.collider.x,
+    y: player.y + player.collider.y,
+    width: player.collider.width,
+    height: player.collider.height,
+  })
 
   player.states = {
     idle: (dt) => {
@@ -323,6 +336,16 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
     }
   }
 
+  player.bounce = () => {
+      player.ySpeed = INITIAL_JUMP_SPEED * 0.75
+      player.grounded = false
+      player.sprite = 'jump'
+      player.frame = 0
+      player.accumulator = 0
+      player.fps = 8
+      player.gravity = true
+  }
+
   player.respawn = () => {
     player.x = player.startX
     player.y = player.startY
@@ -382,6 +405,13 @@ export const createPlayer = (x, y, gravity, initialJumpSpeed, maxYSpeed) => {
       PLAYER_WIDTH * 2,
       PLAYER_HEIGHT * 2,
     )
+  }
+
+  player.debugRender = (ctx, canvas) => {
+    ctx.beginPath()
+    const playerCollider = player.getCollider()
+    ctx.rect(playerCollider.x, playerCollider.y, playerCollider.width, playerCollider.height)
+    ctx.stroke()
   }
 
   return player

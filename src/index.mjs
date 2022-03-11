@@ -8,6 +8,7 @@ const pathnames = [
   '/pillars',
   '/cave',
   '/leap-of-faith',
+  '/there-be-mages',
 ]
 
 const { pathname } = window.location

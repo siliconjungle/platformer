@@ -16,7 +16,20 @@ export const createSpaceship = (x, y) => {
     facing: DIRECTION.RIGHT,
     sprite: 'spaceship',
     xSpeed: -MOVE_SPEED,
+    collider: {
+      x: 0,
+      y: 0,
+      width: SPACESHIP_WIDTH * 2,
+      height: SPACESHIP_HEIGHT * 2,
+    }
   }
+
+  spaceship.getCollider = () => ({
+    x: spaceship.x + spaceship.collider.x,
+    y: spaceship.y + spaceship.collider.y,
+    width: spaceship.collider.width,
+    height: spaceship.collider.height,
+  })
 
   spaceship.update = (dt) => {
     spaceship.x += spaceship.xSpeed * dt
@@ -38,6 +51,13 @@ export const createSpaceship = (x, y) => {
       SPACESHIP_WIDTH * 2,
       SPACESHIP_HEIGHT * 2,
     )
+  }
+
+  spaceship.debugRender = (ctx, canvas) => {
+    ctx.beginPath()
+    const spaceshipCollider = spaceship.getCollider()
+    ctx.rect(spaceshipCollider.x, spaceshipCollider.y, spaceshipCollider.width, spaceshipCollider.height)
+    ctx.stroke()
   }
 
   return spaceship

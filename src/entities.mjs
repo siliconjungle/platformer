@@ -20,3 +20,11 @@ export const renderEntities = (ctx, canvas) => {
     entity.render(ctx, canvas)
   })
 }
+
+export const debugRenderEntities = (ctx, canvas) => {
+  entities.forEach(entity => {
+    entity.debugRender(ctx, canvas)
+  })
+}
+
+export const getEntities = () => entities
